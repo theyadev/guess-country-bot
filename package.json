@@ -1,0 +1,28 @@
+{
+  "name": "geoguessr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "rimraf": "./node_modules/rimraf/bin.js",
+    "clean": "rimraf dist/",
+    "build": "npm run clean && tsc",
+    "start": "node dist/index.js",
+    "dev-start": "npm run build && npm run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "puppeteer": "^13.2.0"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^5.4.4",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.0-dev.20220208"
+  }
+}
