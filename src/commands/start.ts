@@ -6,6 +6,8 @@ import games from "../games";
 import { MessageActionRow, MessageButton } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
+const random_sort = () => Math.random() - 0.5;
+
 const command_data = new SlashCommandBuilder()
   .setName(getNameFromPath(__filename))
   .setDescription("Start a game of guess the country !");
@@ -30,32 +32,35 @@ const command: Command = {
       await interaction.deleteReply();
     }
 
-    // TODO: Random buttons order
-    const countries = getCountries().filter(c => c != country)
-    const random_country = countries[Math.floor(Math.random() * countries.length)]
     const buttons = [
       new MessageButton()
-      .setCustomId(country + ":answer")
-      .setLabel(country)
-      .setStyle("PRIMARY"),
-    new MessageButton()
-      .setCustomId(random_country + ":answer")
-      .setLabel(random_country)
-      .setStyle("PRIMARY")
-    ].sort(() => {
-      return Math.random() - 0.5
-    })
+        .setCustomId(country + ":answer")
+        .setLabel(country)
+        .setStyle("PRIMARY"),
+    ];
+
+    const countries = getCountries().filter((c) => c != country);
+
+    const random_sorted_countries = countries.sort(random_sort);
+
+    for (let i = 0; i < 3; i++) {
+      buttons.push(
+        new MessageButton()
+          .setCustomId(random_sorted_countries[i] + ":answer")
+          .setLabel(random_sorted_countries[i])
+          .setStyle("PRIMARY")
+      );
+    }
 
     const row = new MessageActionRow().addComponents(
-      ...buttons
+      ...buttons.sort(random_sort)
     );
 
     games.set(interaction.guildId, {
       image_buffer,
       country: country,
-      row
+      row,
     });
-
 
     await interaction.editReply({
       files: [
