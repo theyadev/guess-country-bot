@@ -4,10 +4,14 @@ import { getNameFromPath } from "../util";
 import games from "../games";
 
 import { MessageActionRow, MessageButton } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+
+const command_data = new SlashCommandBuilder()
+  .setName(getNameFromPath(__filename))
+  .setDescription("Start a game of guess the country !");
 
 const command: Command = {
-  name: getNameFromPath(__filename),
-  description: "Start a game of guess the country !",
+  command_data,
   async execute(interaction) {
     if (interaction.guildId === null) return;
 
@@ -27,7 +31,7 @@ const command: Command = {
     }
 
     // TODO: Random buttons order
-    const countries = getCountries()
+    const countries = getCountries().filter(c => c != country)
     const random_country = countries[Math.floor(Math.random() * countries.length)]
     const buttons = [
       new MessageButton()

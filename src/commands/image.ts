@@ -1,10 +1,14 @@
 import { Command } from "../type";
 import { getNameFromPath } from "../util";
 import games from "../games";
+import { SlashCommandBuilder } from "@discordjs/builders";
+
+const command_data = new SlashCommandBuilder()
+  .setName(getNameFromPath(__filename))
+  .setDescription("Show the image of the current game !");
 
 const command: Command = {
-  name: getNameFromPath(__filename),
-  description: "Show the image of the current game !",
+  command_data,
   async execute(interaction) {
     if (interaction.guildId === null) return;
 

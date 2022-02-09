@@ -24,7 +24,7 @@ client.on("ready", async () => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  const command = commands.find((e) => e.name == interaction.commandName);
+  const command = commands.find((e) => e.command_data.name == interaction.commandName);
 
   if (command) {
     command.execute(interaction);

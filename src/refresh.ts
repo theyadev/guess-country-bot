@@ -1,14 +1,16 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { config } from "dotenv";
-import { getCommandsForRefresh } from "./commands";
+import { commands } from "./commands";
 
 config();
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 
-const commands = getCommandsForRefresh();
+const commands_datas = commands.map(c => {
+  return c.command_data
+});
 
 export async function refreshSlashCommands(GUILD_ID: string) {
   if (!CLIENT_ID || !GUILD_ID || !DISCORD_TOKEN) throw new Error("Erreur");
@@ -19,7 +21,7 @@ export async function refreshSlashCommands(GUILD_ID: string) {
     console.log("Started refreshing application (/) commands.");
 
     await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {
-      body: commands,
+      body: commands_datas,
     });
 
     console.log("Successfully reloaded application (/) commands.");
