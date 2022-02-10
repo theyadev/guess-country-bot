@@ -24,22 +24,16 @@ const command: Command = {
 
     await interaction.deferReply();
 
-    try {
-      var [image_path, image_buffer, country] = await getRandomImage(
-        interaction.guildId
-      );
-    } catch {
-      await interaction.deleteReply();
-    }
+    var [image_path, country_code] = await getRandomImage();
 
     const buttons = [
       new MessageButton()
-        .setCustomId(country + ":answer")
-        .setLabel(country)
+        .setCustomId(country_code + ":answer")
+        .setLabel(country_code)
         .setStyle("PRIMARY"),
     ];
 
-    const countries = getCountries().filter((c) => c != country);
+    const countries = getCountries().filter((c) => c != country_code);
 
     const random_sorted_countries = countries.sort(random_sort);
 
@@ -57,17 +51,13 @@ const command: Command = {
     );
 
     games.set(interaction.guildId, {
-      image_buffer,
-      country: country,
+      image_path,
+      country: country_code,
       row,
     });
 
     await interaction.editReply({
-      files: [
-        {
-          attachment: image_buffer,
-        },
-      ],
+      files: [image_path],
       components: [row],
     });
   },

@@ -1,11 +1,11 @@
-import { MessageActionRow } from "discord.js"
+import { MessageActionRow } from "discord.js";
 
 interface Game {
-    image_buffer: Buffer | string;
-    country: string;
-    row: MessageActionRow
+  image_path: string;
+  country: string;
+  row: MessageActionRow;
 }
 
-const games: Map<string, Game> = new Map()
+const games: Map<string, Game> = new Map();
 
-export default games
+export default games;

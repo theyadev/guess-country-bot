@@ -17,11 +17,7 @@ const command: Command = {
     if (!game) return;
 
     await interaction.reply({
-      files: [
-        {
-          attachment: game.image_buffer,
-        },
-      ],
+      files: [game.image_path],
       ephemeral: true,
     });
   },

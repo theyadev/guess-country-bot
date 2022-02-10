@@ -1,16 +1,20 @@
-import type { Location } from "./type";
-
 import puppeteer from "puppeteer";
 import NodeGeocoder, { OpenStreetMapOptions } from "node-geocoder";
+import { Location } from "./type";
+import { writeFileSync, readdirSync } from "fs";
 
-import { writeFileSync, readFileSync } from "fs";
+const DIR_PATH = "./public/locations/";
 
 export let locations = readLocations();
 
 function readLocations() {
-  const locations = JSON.parse(
-    readFileSync("./src/locations.json", { encoding: "utf-8" })
-  ) as Location[];
+  const location_files = readdirSync(DIR_PATH);
+
+  const locations = location_files.map((l) => {
+    const [country_code, lat, lon] = l.replace(".png", "").split("_");
+
+    return new Location(DIR_PATH + l, country_code, Number(lat), Number(lon));
+  });
 
   return locations;
 }
@@ -21,36 +25,80 @@ const options: OpenStreetMapOptions = {
 
 const geocoder = NodeGeocoder(options);
 
-export async function getCountryCode(
-  url: string
-): Promise<string | null | undefined> {
+function getLatLonFromURL(url: string) {
   url = url.split("/data")[0];
   const url_params = url.split("@")[1];
   const split = url_params.split(",");
 
-  if (split.length < 2) return null;
+  if (split.length < 2) throw new Error("URL invalid.");
 
   const lat = Number(split[0]);
   const lon = Number(split[1]);
 
-  const res = await geocoder.reverse({
+  return { lat, lon };
+}
+
+interface BasicOptions {
+  url: string;
+}
+
+interface LatLonOptions {
+  lat: number;
+  lon: number;
+}
+
+export async function getRandomImage() {
+  const location = locations[Math.floor(Math.random() * locations.length)];
+
+  return [location.path, location.country_code];
+}
+
+export async function getCountryCode(
+  options: BasicOptions | LatLonOptions
+): Promise<string | null> {
+  try {
+    if ((options as BasicOptions).url) {
+      var { lat, lon } = getLatLonFromURL((options as BasicOptions).url);
+    } else {
+      var { lat, lon } = options as LatLonOptions;
+    }
+
+    const res = await geocoder.reverse({
+      lat,
+      lon,
+    });
+
+    if (res.length === 0 || !res[0].countryCode) return null;
+
+    return res[0].countryCode;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function importImage(
+  url: string,
+  force: boolean = false
+): Promise<null | string> {
+  try {
+    var { lat, lon } = getLatLonFromURL(url);
+  } catch (error) {
+    return null;
+  }
+
+  const country_code = await getCountryCode({
     lat,
     lon,
   });
-  if (res.length === 0) return null;
 
-  return res[0].countryCode;
-}
+  if (country_code === null) return null;
 
-export async function getRandomImage(
-  guild_id: string
-): Promise<[string, string | Buffer, string]> {
+  const image_path = `./public/locations/${country_code}_${lat}_${lon}.png`;
+
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  const location = locations[Math.floor(Math.random() * locations.length)];
-
-  await page.goto(location.url);
+  await page.goto(url);
   await page.click('button[jsname="higCR"]');
   await page.waitForNavigation();
   await page.waitForTimeout(3000);
@@ -70,24 +118,23 @@ export async function getRandomImage(
     }
   });
 
-  const image_path = `game_${guild_id}.png`;
-  const image_buffer = await page.screenshot({ path: image_path });
+  await page.screenshot({ path: image_path });
 
   await browser.close();
 
-  return [image_path, image_buffer, location.country];
+  locations.push(new Location(image_path, country_code, lat, lon));
+
+  return image_path;
 }
 
 export function getCountries() {
-  return locations.map((l) => {
-    return l.country;
-  });
-}
+  const countries: string[] = [];
 
-export function updateLocations(location: Location) {
-  locations.push(location);
+  for (const location of locations) {
+    if (countries.includes(location.country_code)) continue;
 
-  writeFileSync("./src/locations.json", JSON.stringify(locations), {
-    encoding: "utf-8",
-  });
+    countries.push(location.country_code);
+  }
+
+  return countries;
 }

@@ -1,8 +1,7 @@
 import type { Command } from "../type";
-import type { Location } from "../type";
 import { getNameFromPath } from "../util";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { getCountryCode, updateLocations } from "../scrapping";
+import { importImage } from "../scrapping";
 
 const command_data = new SlashCommandBuilder()
   .setName(getNameFromPath(__filename))
@@ -28,21 +27,7 @@ const command: Command = {
       return;
     }
 
-    const country_code = await getCountryCode(url);
-
-    if (!country_code || country_code === null) {
-      await interaction.reply({
-        content: "Lien invalide (CC)",
-        ephemeral: true,
-      });
-
-      return;
-    }
-
-    updateLocations({
-      url,
-      country: country_code,
-    });
+    importImage(url);
 
     await interaction.reply("Correctement ajouté !");
   },
