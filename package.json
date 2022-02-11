@@ -7,7 +7,7 @@
     "rimraf": "./node_modules/rimraf/bin.js",
     "clean": "rimraf dist/",
     "build": "npm run clean && tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "dev-start": "npm run build && npm run start"
   },
   "keywords": [],
