@@ -60,7 +60,7 @@ export async function importLocation(
   await page.goto(url);
   await page.click('button[jsname="higCR"]');
   await page.waitForNavigation();
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(8000);
 
   await page.evaluate(() => {
     const queries = [
