@@ -27,9 +27,22 @@ const command: Command = {
       return;
     }
 
-    importLocation(url);
+    interaction.deferReply();
 
-    await interaction.reply("Correctement ajouté !");
+    const imported = await importLocation(url);
+
+    if (!imported) {
+      await interaction.reply({
+        content: "Error while adding the location !",
+        ephemeral: true,
+      });
+      return;
+    }
+
+    await interaction.reply({
+      content: "Location added !",
+      ephemeral: true,
+    });
   },
 };
 
