@@ -25,3 +25,17 @@ export function fetchFiles<T>(DIRECTORY_PATH: string) {
 
   return files
 }
+
+export function getLatLonFromURL(url: string) {
+  url = url.split("/data")[0];
+  const url_params = url.split("@")[1];
+  const split = url_params.split(",");
+
+  if (split.length < 2) return;
+
+  const lat = Number(split[0]);
+  const lon = Number(split[1]);
+
+  return { lat, lon };
+}
+

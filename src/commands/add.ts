@@ -1,7 +1,7 @@
-import type { Command } from "../type";
-import { getNameFromPath } from "../util";
+import type { Command } from "../types";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { importImage } from "../scrapping";
+import { getNameFromPath } from "../util";
+import { importLocation } from "../lib/locations";
 
 const command_data = new SlashCommandBuilder()
   .setName(getNameFromPath(__filename))
@@ -27,7 +27,7 @@ const command: Command = {
       return;
     }
 
-    importImage(url);
+    importLocation(url);
 
     await interaction.reply("Correctement ajouté !");
   },

@@ -1,11 +1,11 @@
-import { Button } from "../type";
-import { getNameFromPath } from "../util";
-import games from "../games";
+import games from "../lib/games";
+import type { Button } from "../types";
 import {
   MessageActionRow,
   MessageButton,
   MessageButtonStyleResolvable,
 } from "discord.js";
+import { getNameFromPath } from "../util";
 
 const button: Button = {
   name: getNameFromPath(__filename),
@@ -47,7 +47,7 @@ const button: Button = {
       components: [row],
     });
 
-    games.delete(interaction.guildId)
+    games.delete(interaction.guildId);
   },
 };
 

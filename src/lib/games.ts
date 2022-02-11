@@ -1,4 +1,4 @@
-import { MessageActionRow } from "discord.js";
+import type { MessageActionRow } from "discord.js";
 
 interface Game {
   image_path: string;

@@ -1,10 +1,9 @@
-import { Command } from "../type";
-import { getCountries, getRandomImage } from "../scrapping";
-import { getNameFromPath } from "../util";
-import games from "../games";
-
-import { MessageActionRow, MessageButton } from "discord.js";
+import games from "../lib/games";
+import type { Command } from "../types";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { getCountries, getRandomLocation } from "../lib/locations";
+import { getNameFromPath } from "../util";
+import { MessageActionRow, MessageButton } from "discord.js";
 
 const random_sort = () => Math.random() - 0.5;
 
@@ -24,7 +23,7 @@ const command: Command = {
 
     await interaction.deferReply();
 
-    var [image_path, country_code] = await getRandomImage();
+    var [image_path, country_code] = await getRandomLocation();
 
     const buttons = [
       new MessageButton()

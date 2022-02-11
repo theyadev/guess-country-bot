@@ -1,7 +1,7 @@
-import { Command } from "../type";
-import { getNameFromPath } from "../util";
-import games from "../games";
+import games from "../lib/games";
+import type { Command } from "../types";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { getNameFromPath } from "../util";
 
 const command_data = new SlashCommandBuilder()
   .setName(getNameFromPath(__filename))
