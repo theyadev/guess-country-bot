@@ -1,4 +1,4 @@
-import games from "../lib/games";
+import games, { sendImage } from "../lib/games";
 import type { Button } from "../types";
 import {
   MessageActionRow,
@@ -47,7 +47,7 @@ const button: Button = {
       components: [row],
     });
 
-    games.delete(interaction.guildId);
+    await sendImage(interaction, true)
   },
 };
 

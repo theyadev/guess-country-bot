@@ -23,7 +23,7 @@ export function fetchFiles<T>(DIRECTORY_PATH: string) {
     files.push(file);
   }
 
-  return files
+  return files;
 }
 
 export function getLatLonFromURL(url: string) {
@@ -39,3 +39,6 @@ export function getLatLonFromURL(url: string) {
   return { lat, lon };
 }
 
+export function random_sort() {
+  return Math.random() - 0.5;
+}

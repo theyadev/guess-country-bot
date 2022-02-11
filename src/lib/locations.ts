@@ -30,7 +30,7 @@ function readLocations(path: string) {
 export async function getRandomLocation() {
   const location = locations[Math.floor(Math.random() * locations.length)];
 
-  return [location.path, location.country_code];
+  return location
 }
 
 export async function importLocation(
@@ -52,7 +52,7 @@ export async function importLocation(
 
   if (!country_code) return;
 
-  const image_path = `./public/locations/${country_code}_${lat}_${lon}.png`;
+  const image_path = `${DIR_PATH}${country_code}_${lat}_${lon}.png`;
 
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
