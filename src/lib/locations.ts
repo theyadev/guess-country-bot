@@ -14,7 +14,7 @@ function readLocations(path: string) {
   try {
     location_files = readdirSync(path);
   } catch {
-    mkdirSync(path, { recursive: true })
+    mkdirSync(path, { recursive: true });
     return [];
   }
 
@@ -27,10 +27,19 @@ function readLocations(path: string) {
   return locations;
 }
 
-export async function getRandomLocation() {
-  const location = locations[Math.floor(Math.random() * locations.length)];
+export async function getRandomLocation(
+  already_played: Location[] = []
+): Promise<Location | undefined> {
+  const filtered_locations = locations.filter(
+    (l) => !already_played.includes(l)
+  );
 
-  return location
+  if (!filtered_locations) return undefined;
+
+  const location =
+    filtered_locations[Math.floor(Math.random() * filtered_locations.length)];
+
+  return location;
 }
 
 export async function importLocation(

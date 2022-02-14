@@ -1,4 +1,4 @@
-import games, { sendImage } from "../lib/games";
+import games, { createStopGameRow, sendImage } from "../lib/games";
 import type { Button } from "../types";
 import {
   MessageActionRow,
@@ -10,21 +10,21 @@ import { getNameFromPath } from "../util";
 const button: Button = {
   name: getNameFromPath(__filename),
   async execute(interaction) {
-    if (interaction.guildId === null) return;
+    if (!interaction.member?.user.id) return;
 
-    const game = games.get(interaction.guildId);
+    const game = games.get(interaction.member?.user.id);
 
-    if (!game) {
-      console.log("Pourquoi ?");
-
-      return;
-    }
+    if (!game) return;
 
     let style: MessageButtonStyleResolvable = "DANGER";
 
     const answer = interaction.customId.split(":")[0];
 
-    if (answer == game.country) style = "SUCCESS";
+    if (answer == game.country) {
+      style = "SUCCESS";
+
+      game.score++;
+    }
 
     const row = new MessageActionRow();
     const components = [];
@@ -44,10 +44,10 @@ const button: Button = {
     row.addComponents(...components);
 
     await interaction.update({
-      components: [row],
+      components: [row, createStopGameRow(interaction.member?.user.id)],
     });
 
-    await sendImage(interaction, true)
+    await sendImage(interaction, true);
   },
 };
 
