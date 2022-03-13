@@ -8,6 +8,7 @@
     "clean": "rimraf dist/",
     "build": "npm run clean && tsc",
     "start": "node dist/src/index.js",
+    "scrap": "tsc && node dist/src/scrap.js",
     "dev-start": "npm run build && npm run start"
   },
   "keywords": [],
